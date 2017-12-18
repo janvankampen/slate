@@ -2,238 +2,544 @@
 title: API Reference
 
 language_tabs: # must be one of https://git.io/vQNgJ
-  - shell
-  - ruby
-  - python
-  - javascript
+  - php
 
 toc_footers:
-  - <a href='#'>Sign Up for a Developer Key</a>
-  - <a href='https://github.com/lord/slate'>Documentation Powered by Slate</a>
+  - <a href='https://customer.roamler.com/#/settings'>Sign Up for an API Key</a>
 
 includes:
-  - errors
 
 search: true
 ---
 
 # Introduction
 
-Welcome to the Kittn API! You can use our API to access Kittn API endpoints, which can get information on various cats, kittens, and breeds in our database.
+Intro stuff
 
-We have language bindings in Shell, Ruby, and Python! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
-
-This example API documentation page was created with [Slate](https://github.com/lord/slate). Feel free to edit it and use it as a base for your own API's documentation.
+Get your key at [Roamler Customer Portal](https://github.com/lord/slate).
 
 # Authentication
 
-> To authorize, use this code:
+Roamler uses API keys to allow access to the API. You can register a new API key at our [customer portal](https://customer.roamler.com/#/settings). There are two ways to authenticate your API calls.
 
-```ruby
-require 'kittn'
+## Authenticate via URL
+> To authorize a call via the url, use this code:
 
-api = Kittn::APIClient.authorize!('meowmeowmeow')
+```php
+<?php
+	$curl = curl_init();
+
+	curl_setopt_array($curl, array(
+	  CURLOPT_URL => "https://api-customer.roamler.com/v1/Jobs?apiKey=MY_API_KEY",
+	  CURLOPT_RETURNTRANSFER => true,
+	  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+	  CURLOPT_CUSTOMREQUEST => "GET",
+	  CURLOPT_HTTPHEADER => array(
+	    "X-Roamler-Api-Key: MY_API_KEY",
+	    "content-type: application/json"
+	  )
+	));
+		
+	$response = curl_exec($curl);
+	$error = curl_error($curl);
+	
+	curl_close($curl);
+?>
 ```
 
-```python
-import kittn
+You can add `apiKey` to the url parameters to authenticate API calls.
 
-api = kittn.authorize('meowmeowmeow')
+Example: 
+<code>https://api-customer.roamler.com/v1/Jobs?apiKey=MY_API_KEY</code>
+
+## Authenticate via header
+
+> To authorize a call via a header, use this code:
+
+```php
+<?php
+	$curl = curl_init();
+
+	curl_setopt_array($curl, array(
+	  CURLOPT_URL => "https://api-customer.roamler.com/v1/Jobs",
+	  CURLOPT_RETURNTRANSFER => true,
+	  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+	  CURLOPT_CUSTOMREQUEST => "GET",
+	  CURLOPT_HTTPHEADER => array(
+	    "content-type: application/json"
+	  )
+	));
+		
+	$response = curl_exec($curl);
+	$error = curl_error($curl);
+	
+	curl_close($curl);
+?>
 ```
 
-```shell
-# With shell, you can just pass the correct header with each request
-curl "api_endpoint_here"
-  -H "Authorization: meowmeowmeow"
+You can add `X-Roamler-Api-Key` to your request headers to authenticate API calls.
+
+Example:
+<code>X-Roamler-Api-Key: MY_API_KEY</code>
+
+# Webhook
+
+> The webhook returns JSON structured like this:
+
+```json
+{
+  "Id": "3354h3n436879257n2463",
+  "Attempt": 1,
+  "Properties": {},
+  "Notifications": [
+    ...
+    {
+      "Action": "submission-completed",
+      "title": "string",
+      "date": "datetime",
+      "url": "url",
+      "jobUrl": "url"
+    }
+    ...
+  ]
+}
 ```
 
-```javascript
-const kittn = require('kittn');
+Webhook description
 
-let api = kittn.authorize('meowmeowmeow');
+Configure a webhook via our [customer portal](https://customer.roamler.com/#/settings).
+
+# Jobs
+
+## Get all jobs
+
+```php
+<?php
+	$curl = curl_init();
+
+	curl_setopt_array($curl, array(
+	  CURLOPT_URL => "https://api-customer.roamler.com/v1/Jobs",
+	  CURLOPT_RETURNTRANSFER => true,
+	  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+	  CURLOPT_CUSTOMREQUEST => "GET",
+	  CURLOPT_HTTPHEADER => array(
+	    "X-Roamler-Api-Key: MY_API_KEY",
+	    "content-type: application/json"
+	  )
+	));
+		
+	$response = curl_exec($curl);
+	$error = curl_error($curl);
+	
+	curl_close($curl);
+?>
 ```
 
-> Make sure to replace `meowmeowmeow` with your API key.
 
-Kittn uses API keys to allow access to the API. You can register a new Kittn API key at our [developer portal](http://example.com/developers).
+> The above command returns JSON structured like this:
 
-Kittn expects for the API key to be included in all API requests to the server in a header that looks like the following:
-
-`Authorization: meowmeowmeow`
-
-<aside class="notice">
-You must replace <code>meowmeowmeow</code> with your personal API key.
-</aside>
-
-# Kittens
-
-## Get All Kittens
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get
+```json
+[
+ ...
+  {
+    "hRef": "string",
+    "id": 0,
+    "title": "string",
+    "description": "string",
+    "liveDate": "datetime",
+    "closeDate": "datettime",
+    "isActive": true,
+    "questions": [
+      {
+        "hRef": "string",
+        "id": 0,
+        "code": "string",
+        "questionType": "None",
+        "text": "string",
+        "isOptional": true,
+        "answerOptions": [
+          {
+            "id": 0,
+            "text": "string",
+            "code": "string"
+          }
+        ],
+        "imageHash": "string"
+      }
+    ],
+    "attributeDefinitions": [
+      {
+        "name": "string",
+        "id": 0,
+        "type": "Unknown",
+        "options": [
+          {
+            "id": 0,
+            "value": "string"
+          }
+        ]
+      }
+    ]
+  }
+ ...
+]
 ```
 
-```python
-import kittn
+This endpoint retrieves all jobs.
 
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get()
+### HTTP Request
+
+`GET /v1/Jobs/`
+
+### URL Parameters
+
+Parameter | Default value | Required | Description| Parameter Type| Data Type
+--------- | ------- | ------- | ------- | ------- | -----------
+page | 0 | No | I really don't know [TODO] | Query | Integer
+
+## Get a specific job
+
+```php
+<?php
+	$curl = curl_init();
+
+	curl_setopt_array($curl, array(
+	  CURLOPT_URL => "https://api-customer.roamler.com/v1/Jobs/{JobId}",
+	  CURLOPT_RETURNTRANSFER => true,
+	  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+	  CURLOPT_CUSTOMREQUEST => "GET",
+	  CURLOPT_HTTPHEADER => array(
+	    "X-Roamler-Api-Key: MY_API_KEY",
+	    "content-type: application/json"
+	  )
+	));
+		
+	$response = curl_exec($curl);
+	$error = curl_error($curl);
+	
+	curl_close($curl);
+?>
 ```
 
-```shell
-curl "http://example.com/api/kittens"
-  -H "Authorization: meowmeowmeow"
+
+> The above command returns JSON structured like this:
+
+```json
+{
+  "hRef": "string",
+  "id": 0,
+  "title": "string",
+  "description": "string",
+  "liveDate": "datetime",
+  "closeDate": "datetime",
+  "isActive": true,
+  "questions": [
+    {
+      "hRef": "string",
+      "id": 0,
+      "code": "string",
+      "questionType": "None",
+      "text": "string",
+      "isOptional": true,
+      "answerOptions": [
+        {
+          "id": 0,
+          "text": "string",
+          "code": "string"
+        }
+      ],
+      "imageHash": "string"
+    }
+  ],
+  "attributeDefinitions": [
+    {
+      "name": "string",
+      "id": 0,
+      "type": "Unknown",
+      "options": [
+        {
+          "id": 0,
+          "value": "string"
+        }
+      ]
+    }
+  ]
+}
 ```
 
-```javascript
-const kittn = require('kittn');
+This endpoint retrieves a specific job.
 
-let api = kittn.authorize('meowmeowmeow');
-let kittens = api.kittens.get();
+### HTTP Request
+
+`GET /v1/Jobs/{JobId}`
+
+### URL Parameters
+
+Parameter | Default value | Required | Description| Parameter Type| Data Type
+--------- | ------- | ------- | ------- | ------- | -----------
+JobId | null | Yes | Id of the job | Path | Integer
+
+## Get locations of a job
+
+```php
+<?php
+	$curl = curl_init();
+
+	curl_setopt_array($curl, array(
+	  CURLOPT_URL => "https://api-customer.roamler.com/v1/Jobs/{JobId}/Locations",
+	  CURLOPT_RETURNTRANSFER => true,
+	  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+	  CURLOPT_CUSTOMREQUEST => "GET",
+	  CURLOPT_HTTPHEADER => array(
+	    "X-Roamler-Api-Key: MY_API_KEY",
+	    "content-type: application/json"
+	  )
+	));
+		
+	$response = curl_exec($curl);
+	$error = curl_error($curl);
+	
+	curl_close($curl);
+?>
 ```
 
 > The above command returns JSON structured like this:
 
 ```json
 [
+ ...
   {
-    "id": 1,
-    "name": "Fluffums",
-    "breed": "calico",
-    "fluffiness": 6,
-    "cuteness": 7
-  },
-  {
-    "id": 2,
-    "name": "Max",
-    "breed": "unknown",
-    "fluffiness": 5,
-    "cuteness": 10
+    "id": 0,
+    "address": "string",
+    "longitude": 0,
+    "latitude": 0,
+    "attributes": [
+      {
+        "name": "string",
+        "attributeDefinitionId": 0,
+        "type": "Unknown",
+        "value": 0,
+        "text": "string"
+      }
+    ]
   }
+ ...
 ]
 ```
 
-This endpoint retrieves all kittens.
+This endpoint retrieves locations for a specific job. You'll get all locations that are specified by Roamler for this job.
 
 ### HTTP Request
 
-`GET http://example.com/api/kittens`
+`GET /v1/Jobs/{JobId}/Locations`
 
-### Query Parameters
+### URL Parameters
 
-Parameter | Default | Description
---------- | ------- | -----------
-include_cats | false | If set to true, the result will also include cats.
-available | true | If set to false, the result will include kittens that have already been adopted.
+Parameter | Default value | Required | Description| Parameter Type| Data Type
+--------- | ------- | ------- | ------- | ------- | -----------
+JobId | null | Yes | Id of the job | Path | Integer
+showCustomerAvailableAttributes | false | No | Indicates if you want to see available location attributes | Query | Boolean
 
-<aside class="success">
-Remember — a happy kitten is an authenticated kitten!
-</aside>
+## Get submissions of a job
 
-## Get a Specific Kitten
+```php
+<?php
+	$curl = curl_init();
 
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```shell
-curl "http://example.com/api/kittens/2"
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.get(2);
+	curl_setopt_array($curl, array(
+	  CURLOPT_URL => "https://api-customer.roamler.com/v1/Jobs/{JobId}/Submissions?fromDate=2017-12-01&toDate=2017-12-31",
+	  CURLOPT_RETURNTRANSFER => true,
+	  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+	  CURLOPT_CUSTOMREQUEST => "GET",
+	  CURLOPT_HTTPHEADER => array(
+	    "X-Roamler-Api-Key: MY_API_KEY",
+	    "content-type: application/json"
+	  )
+	));
+		
+	$response = curl_exec($curl);
+	$error = curl_error($curl);
+	
+	curl_close($curl);
+?>
 ```
 
 > The above command returns JSON structured like this:
 
 ```json
-{
-  "id": 2,
-  "name": "Max",
-  "breed": "unknown",
-  "fluffiness": 5,
-  "cuteness": 10
-}
+[
+ ...
+  {
+    "hRef": "string",
+    "submitDate": "2017-12-18T09:44:49.342Z"
+  }
+ ...
+]
 ```
 
-This endpoint retrieves a specific kitten.
-
-<aside class="warning">Inside HTML code blocks like this one, you can't use Markdown, so use <code>&lt;code&gt;</code> blocks to denote code.</aside>
+This endpoint retrieves submission urls for a specific job.
 
 ### HTTP Request
 
-`GET http://example.com/kittens/<ID>`
+`GET /v1/Jobs/{JobId}/Submissions`
 
 ### URL Parameters
 
-Parameter | Description
---------- | -----------
-ID | The ID of the kitten to retrieve
+Parameter | Default value | Required | Description| Parameter Type| Data Type
+--------- | ------- | ------- | ------- | ------- | -----------
+JobId | null | Yes | Id of the job | Path | Integer
+fromDate | null | Yes | The start datetime of the timeframe you want to query for submissions | Query | Datetime
+fromDate | null | Yes | The end datetime of the timeframe you want to query for submissions | Query | Datetime
+page | 1 | No | The page of results you need | Query | Integer
+take | 50 | No | The amount of submissions per page (max 1000) | Query | Integer
 
-## Delete a Specific Kitten
+# Submissions
 
-```ruby
-require 'kittn'
+## Get a submission
 
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.delete(2)
+```php
+<?php
+	$curl = curl_init();
+
+	curl_setopt_array($curl, array(
+	  CURLOPT_URL => "https://api-customer.roamler.com/v1/submissions/{submissionId}",
+	  CURLOPT_RETURNTRANSFER => true,
+	  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+	  CURLOPT_CUSTOMREQUEST => "GET",
+	  CURLOPT_HTTPHEADER => array(
+	    "X-Roamler-Api-Key: MY_API_KEY",
+	    "content-type: application/json"
+	  )
+	));
+		
+	$response = curl_exec($curl);
+	$error = curl_error($curl);
+	
+	curl_close($curl);
+?>
 ```
 
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.delete(2)
-```
-
-```shell
-curl "http://example.com/api/kittens/2"
-  -X DELETE
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.delete(2);
-```
 
 > The above command returns JSON structured like this:
 
 ```json
 {
-  "id": 2,
-  "deleted" : ":("
+  "hRef": "string",
+  "jobHRef": "string",
+  "id": 0,
+  "jobTitle": "string",
+  "location": {
+    "id": 0,
+    "address": "string",
+    "longitude": 0,
+    "latitude": 0,
+    "attributes": [
+      {
+        "name": "string",
+        "attributeDefinitionId": 0,
+        "type": "Unknown",
+        "value": 0,
+        "text": "string"
+      }
+    ]
+  },
+  "submissionDate": "datetime",
+  "questions": [
+    {
+      "hRef": "string",
+      "id": 0,
+      "code": "string",
+      "questionType": "None",
+      "text": "string",
+      "isOptional": true,
+      "answerOptions": [
+        {
+          "id": 0,
+          "text": "string",
+          "code": "string"
+        }
+      ],
+      "imageHash": "string"
+    }
+  ],
+  "answers": [
+    {
+      "questionId": 0,
+      "value": 0,
+      "answerOptions": [
+        {
+          "id": 0,
+          "text": "string",
+          "code": "string"
+        }
+      ],
+      "text": "string",
+      "latitude": 0,
+      "longitude": 0,
+      "accuracy": 0,
+      "userAnswerId": 0,
+      "photoUrl": "string",
+      "answerDate": "datetime"
+    }
+  ],
+  "submissionSharing": {
+    "isShared": true,
+    "publicLink": "string"
+  },
+  "data": {
+    "location": {}
+  }
 }
 ```
 
-This endpoint deletes a specific kitten.
+This endpoint retrieves a single submission. Most of the times you don't have to generate this url yourself. The webhook and the `/v1/Jobs/{JobId}/Submissions` will return the preformatted url to you in the `href` field. However, you may want to add some url parameters to get specific information in the response.
 
 ### HTTP Request
 
-`DELETE http://example.com/kittens/<ID>`
+`GET /v1/submissions/{submissionId}`
 
 ### URL Parameters
 
-Parameter | Description
---------- | -----------
-ID | The ID of the kitten to delete
+Parameter | Default value | Required | Description| Parameter Type| Data Type
+--------- | ------- | ------- | ------- | ------- | -----------
+submissionId | null | Yes | The id of the submission | Path | Integer
+includeAnswers | true | No | Indicating if you want to get the answers | Query | Integer
+showCustomerAvailableAttributes | true | No | Indicates if you want to get task attributes | Query | Integer
+includeQuestions | false | No | Indicates if you want to get the questions of the job | Query | Integer
 
+## Get a photo
+
+```php
+<?php
+	$curl = curl_init();
+
+	curl_setopt_array($curl, array(
+	  CURLOPT_URL => "https://api-customer.roamler.com/v1/submissions/{submissionId}/image/{photoId}",
+	  CURLOPT_RETURNTRANSFER => true,
+	  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+	  CURLOPT_CUSTOMREQUEST => "GET",
+	  CURLOPT_HTTPHEADER => array(
+	    "X-Roamler-Api-Key: MY_API_KEY",
+	    "content-type: application/json"
+	  )
+	));
+		
+	$response = curl_exec($curl);
+	$error = curl_error($curl);
+	
+	curl_close($curl);
+?>
+```
+
+This endpoint retrieves a photo.
+
+### HTTP Request
+
+`GET /v1/submissions/{submissionId}/image/{photoId}`
+
+### URL Parameters
+
+Parameter | Default value | Required | Description| Parameter Type| Data Type
+--------- | ------- | ------- | ------- | ------- | -----------
+submissionId | null | Yes | The id of the submission | Path | Integer
+photoId | null | Yes | The id of the submission | Path | Integer
